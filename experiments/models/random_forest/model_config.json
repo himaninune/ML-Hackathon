@@ -1,0 +1,28 @@
+{
+    "model_name": "Random Forest",
+    "algorithm": "RandomForestClassifier",
+    "features": [
+        "gps_to_road_distance_m",
+        "gps_speed_kmh",
+        "dt_seconds",
+        "step_distance_m",
+        "gap_flag",
+        "road_length_m",
+        "road_connectivity_degree",
+        "candidate_rank",
+        "heading_difference_deg_sin",
+        "heading_difference_deg_cos",
+        "gps_heading_deg_sin",
+        "gps_heading_deg_cos",
+        "road_bearing_deg_sin",
+        "road_bearing_deg_cos"
+    ],
+    "target": "label",
+    "number_of_estimators": 200,
+    "max_depth": null,
+    "min_samples_split": 2,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt",
+    "class_weight": "balanced_subsample",
+    "random_state": 42
+}

@@ -1,0 +1,12 @@
+{
+    "model": "Random Forest",
+    "accuracy": 0.7335760057634703,
+    "precision": 0.6450259132852989,
+    "recall": 0.5474519901298144,
+    "f1_score": 0.592246982358403,
+    "log_loss": 0.5544722844652481,
+    "training_rows": 1093351,
+    "validation_rows": 263730,
+    "training_trips": 64,
+    "validation_trips": 16
+}

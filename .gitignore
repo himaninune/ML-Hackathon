@@ -15,3 +15,4 @@ experiments/logs/
 visualizations/*.html
 experiments/results/*_candidates.csv
 experiments/results/*_features.csv
+experiments/models/random_forest/random_forest_model.joblib
