@@ -13,7 +13,8 @@ from xgboost import XGBClassifier
 TRAIN_CSV = "experiments/results/train_features.csv"
 TEST_CSV = "experiments/results/student_test_features.csv"
 RESULTS_DIR = "experiments/results"
-MODELS_DIR = "models"
+MODEL_OUTPUT_DIR = "experiments/model_results/xgboost"
+os.makedirs(MODEL_OUTPUT_DIR, exist_ok=True)
 
 TRIP_ID_COL = "trip_id"
 OBS_ID_COL = "observation_index"
@@ -82,7 +83,7 @@ def evaluate_predictions(df: pd.DataFrame, probs: np.ndarray, threshold: float =
 # ==============================================================================
 def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    os.makedirs(MODELS_DIR, exist_ok=True)
+    os.makedirs(MODEL_OUTPUT_DIR, exist_ok=True)
 
     print(f"Loading training data from {TRAIN_CSV}...")
     train_df = pd.read_csv(TRAIN_CSV)
@@ -172,7 +173,7 @@ def main():
     print("=" * 68)
 
     # 1. Save trained model artifact
-    model_path = os.path.join(MODELS_DIR, "xgboost_baseline.json")
+    model_path = os.path.join(MODEL_OUTPUT_DIR, "xgboost_baseline.json")
     final_model.save_model(model_path)
 
     # 2. Save feature importances
@@ -180,12 +181,12 @@ def main():
         "feature": FEATURE_COLS,
         "importance": final_model.feature_importances_
     }).sort_values("importance", ascending=False)
-    fi_df.to_csv(os.path.join(RESULTS_DIR, "xgboost_feature_importance.csv"), index=False)
+    fi_df.to_csv(os.path.join(MODEL_OUTPUT_DIR, "feature_importance.csv"), index=False)
 
     # 3. Save student-test predictions (needed later for HMM/Viterbi & Route Continuity)
     preds_df = test_df[[TRIP_ID_COL, OBS_ID_COL, "timestamp", ARC_ID_COL, TARGET_COL]].copy()
     preds_df["pred_prob"] = test_probs
-    preds_df.to_csv(os.path.join(RESULTS_DIR, "xgboost_student_test_preds.csv"), index=False)
+    preds_df.to_csv(os.path.join(MODEL_OUTPUT_DIR, "student_test_predictions.csv"), index=False)
 
     # 4. Log metrics into consolidated comparison table
     log_row = {

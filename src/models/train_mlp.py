@@ -17,7 +17,8 @@ from sklearn.metrics import f1_score, log_loss, accuracy_score, precision_score,
 TRAIN_CSV = "experiments/results/train_features.csv"
 TEST_CSV = "experiments/results/student_test_features.csv"
 RESULTS_DIR = "experiments/results"
-MODELS_DIR = "models"
+MODEL_OUTPUT_DIR = "experiments/model_results/mlp"
+os.makedirs(MODEL_OUTPUT_DIR, exist_ok=True)
 
 TRIP_ID_COL = "trip_id"
 OBS_ID_COL = "observation_index"
@@ -92,7 +93,7 @@ def build_mlp_pipeline() -> Pipeline:
 # ==============================================================================
 def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    os.makedirs(MODELS_DIR, exist_ok=True)
+    os.makedirs(MODEL_OUTPUT_DIR, exist_ok=True)
 
     print(f"Loading training data from {TRAIN_CSV}...")
     train_df = pd.read_csv(TRAIN_CSV)
@@ -172,7 +173,7 @@ def main():
     print("=" * 68)
 
     # 1. Save trained pipeline (includes imputer + scaler + MLP weights)
-    model_path = os.path.join(MODELS_DIR, "mlp_baseline.joblib")
+    model_path = os.path.join(MODEL_OUTPUT_DIR, "mlp_baseline.joblib")
     joblib.dump(final_pipe, model_path)
 
     # 2. Save real epoch-wise training curve (for Report Section 3.3)
@@ -182,12 +183,12 @@ def main():
         "train_loss": mlp_step.loss_curve_,
         "val_accuracy": mlp_step.validation_scores_,
     })
-    history_df.to_csv(os.path.join(RESULTS_DIR, "mlp_training_history.csv"), index=False)
+    history_df.to_csv(os.path.join(MODEL_OUTPUT_DIR, "training_history.csv"), index=False)
 
     # 3. Save student-test predictions
     preds_df = test_df[[TRIP_ID_COL, OBS_ID_COL, "timestamp", ARC_ID_COL, TARGET_COL]].copy()
     preds_df["pred_prob"] = test_probs
-    preds_df.to_csv(os.path.join(RESULTS_DIR, "mlp_student_test_preds.csv"), index=False)
+    preds_df.to_csv(os.path.join(MODEL_OUTPUT_DIR, "student_test_predictions.csv"), index=False)
 
     # 4. Append results to consolidated comparison table
     serializable_params = {k: (list(v) if isinstance(v, tuple) else v) for k, v in MLP_PARAMS.items() if k != "verbose"}
