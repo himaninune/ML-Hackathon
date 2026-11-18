@@ -10,3 +10,8 @@ venv/
 
 artifacts/models/
 experiments/logs/
+
+# Generated data and visualizations
+visualizations/*.html
+experiments/results/*_candidates.csv
+experiments/results/*_features.csv
