@@ -33,22 +33,17 @@ DATA_PATH = (
     / "train_features.csv"
 )
 
-MODEL_DIR = (
+OUTPUT_DIR = (
     PROJECT_ROOT
     / "experiments"
-    / "models"
+    / "model_results"
     / "random_forest"
 )
 
-RESULT_DIR = (
-    PROJECT_ROOT
-    / "experiments"
-    / "results"
-    / "random_forest"
-)
+MODEL_DIR = OUTPUT_DIR
+RESULT_DIR = OUTPUT_DIR
 
-MODEL_DIR.mkdir(parents=True, exist_ok=True)
-RESULT_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
@@ -391,7 +386,7 @@ metrics = {
     )
 }
 
-metrics_path = RESULT_DIR / "evaluation_metrics.json"
+metrics_path = OUTPUT_DIR / "metrics.json"
 
 with open(metrics_path, "w") as f:
     json.dump(metrics, f, indent=4)
@@ -417,7 +412,7 @@ importance_df = importance_df.sort_values(
     ascending=False
 )
 
-importance_path = RESULT_DIR / "feature_importance.csv"
+importance_path = OUTPUT_DIR / "feature_importance.csv"
 
 importance_df.to_csv(
     importance_path,
@@ -465,7 +460,7 @@ print("Final model training completed!")
 # 14. SAVE FINAL MODEL
 # ============================================================
 
-model_path = MODEL_DIR / "random_forest_model.joblib"
+model_path = OUTPUT_DIR / "random_forest_model.joblib"
 
 joblib.dump(final_model, model_path)
 
@@ -490,7 +485,7 @@ config = {
     "random_state": 42
 }
 
-config_path = MODEL_DIR / "model_config.json"
+config_path = OUTPUT_DIR / "model_config.json"
 
 with open(config_path, "w") as f:
     json.dump(config, f, indent=4)

@@ -20,7 +20,7 @@ from sklearn.metrics import (
 )
 
 # 1. Load dataset
-DATA_PATH = "experiments/results/train_features (1).csv"
+DATA_PATH = "experiments/results/train_features.csv"
 
 print("Loading dataset...")
 df = pd.read_csv(DATA_PATH)
