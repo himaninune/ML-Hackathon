@@ -109,10 +109,10 @@ export function Prediction() {
   const coverage = total > 0 ? matchedCount / total * 100 : 0;
 
   return <div className="page-stack">
-    <PageHeader eyebrow="SEQUENCE DECODING" title="Route reconstruction" description="Run XGBoost candidate scoring and road-aware HMM/Viterbi decoding through the connected backend." actions={result ? <Link className="button button-secondary" to={`/evaluation/${tripId}`}>View evaluation <ArrowRight size={15} /></Link> : undefined} />
+    <PageHeader eyebrow="MAP MATCHING" title="Route reconstruction" description="Choose a GPS trip to see its trace and reconstruct the roads it followed." actions={result ? <Link className="button button-secondary" to={`/evaluation/${tripId}`}>View evaluation <ArrowRight size={15} /></Link> : undefined} />
 
     <section className="panel prediction-control">
-      <div className="prediction-control-copy"><div className="prediction-control-icon"><Route size={19} /></div><div><span className="eyebrow">SELECTED INPUT</span><strong>Choose a trip to reconstruct</strong><small>Trip choices are loaded from <code>GET /api/trips</code>.</small></div></div>
+      <div className="prediction-control-copy"><div className="prediction-control-icon"><Route size={19} /></div><div><span className="eyebrow">SELECTED TRIP</span><strong>Choose a trip to reconstruct</strong><small>Select a GPS trip, then run map matching to view the reconstructed route.</small></div></div>
       <div className="prediction-control-actions">
         <label className="select-wrap"><span className="sr-only">Trip ID</span><select value={tripId} onChange={(event) => chooseTrip(event.target.value)} disabled={!trips.length}>
           {!trips.length && <option value="">No trips available</option>}

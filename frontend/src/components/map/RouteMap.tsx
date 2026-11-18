@@ -47,8 +47,8 @@ export function RouteMap({
   return <div className={`route-map ${compact ? 'route-map-compact' : ''}`}>
     <MapContainer key={`${tripId || 'trip'}-${gpsCoordinates.length}-${segments.length}`} center={center} zoom={13} scrollWheelZoom className="leaflet-map">
       <TileLayer
-        attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <LayersControl position="topright">
         <LayersControl.Overlay checked name="Original GPS trajectory">
