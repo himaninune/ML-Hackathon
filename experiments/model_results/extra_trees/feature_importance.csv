@@ -1,0 +1,14 @@
+feature,importance
+heading_difference_deg,0.2841677871551698
+road_bearing_deg_sin,0.102833714628012
+road_bearing_deg_cos,0.08322604376696097
+gps_to_road_distance_m,0.07763852439344048
+road_connectivity_degree,0.07401509439470257
+road_length_m,0.06692007744780107
+gps_speed_kmh,0.06686343491048075
+gps_heading_deg_sin,0.06519067010407867
+candidate_rank,0.06131730782550375
+gps_heading_deg_cos,0.05887208690033116
+step_distance_m,0.05142828951450057
+dt_seconds,0.007158023154947098
+gap_flag,0.00036894580407103564
