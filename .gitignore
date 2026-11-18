@@ -21,3 +21,5 @@ experiments/models/random_forest/random_forest_model.joblib
 experiments/model_results/*/*.joblib
 experiments/model_results/*/validation_predictions.csv
 experiments/model_results/*/*.pkl
+data/Student folder/evaluator_test/
+data/processed/evaluator_test/

@@ -6,8 +6,7 @@ PROCESSED_DIR = ROOT / "data" / "processed"
 RESULTS_DIR = ROOT / "experiments" / "results"
 VISUALIZATIONS_DIR = ROOT / "visualizations"
 
-PARTITIONS = ("train", "student_test")
-
+PARTITIONS = ("train", "student_test", "evaluator_test")
 # Dataset convention assumed by this package:
 # .route arc IDs are zero-based row positions in .arcs.
 # Change to "one_based" if the dataset documentation says so.
