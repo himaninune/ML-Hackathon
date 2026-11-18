@@ -1,5 +1,8 @@
 # PathSnap – Person 1 Data & Preprocessing Package
 
+The FastAPI backend setup, endpoints, prediction pipeline, and two-laptop
+deployment instructions are documented in [BACKEND.md](BACKEND.md).
+
 This package provides the Person 1 pipeline for the GPS-to-road map-matching project.
 
 ## What it does
