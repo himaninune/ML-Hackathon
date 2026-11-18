@@ -135,19 +135,25 @@ print(classification_report(y_test, y_pred, zero_division=0))
 print("\nConfusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
-# 8. Save model and results
-os.makedirs("models", exist_ok=True)
-os.makedirs("experiments/results", exist_ok=True)
 
-joblib.dump(model, "models/logistic_regression.pkl")
+# 8. Save model and results in a standardized location
+OUTPUT_DIR = "experiments/model_results/logistic_regression"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# Save trained model
+joblib.dump(
+    model,
+    os.path.join(OUTPUT_DIR, "logistic_regression.pkl")
+)
+
+# Save evaluation metrics
 with open(
-    "experiments/results/logistic_regression_metrics.json",
+    os.path.join(OUTPUT_DIR, "metrics.json"),
     "w"
 ) as file:
     json.dump(metrics, file, indent=4)
 
-# 9. Save predictions
+# Save validation predictions
 predictions = pd.DataFrame({
     "trip_id": groups.iloc[test_idx].values,
     "candidate_arc_id": df.iloc[test_idx]["candidate_arc_id"].values,
@@ -157,8 +163,9 @@ predictions = pd.DataFrame({
 })
 
 predictions.to_csv(
-    "experiments/results/logistic_regression_predictions.csv",
+    os.path.join(OUTPUT_DIR, "validation_predictions.csv"),
     index=False
 )
 
 print("\nModel and results saved successfully!")
+print("Output directory:", OUTPUT_DIR)
