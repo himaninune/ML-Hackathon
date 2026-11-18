@@ -1,0 +1,16 @@
+{
+  "pointwise_xgb_top1_accuracy": 0.7471,
+  "viterbi_sequence_top1_accuracy": 0.8003,
+  "accuracy_gain": 0.0531,
+  "pointwise_route_continuity": 0.8986,
+  "viterbi_route_continuity": 0.9974,
+  "route_continuity_gain": 0.0988,
+  "viterbi_decoding_time_seconds": 32.5551,
+  "transition_log_priors": {
+    "same_arc": 0.0,
+    "connected_1hop": -0.5,
+    "connected_2hop": -2.0,
+    "disconnected": -7.5,
+    "gap_flag": -1.0
+  }
+}
