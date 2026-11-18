@@ -1,0 +1,51 @@
+{
+  "selected_model": "XGBoost (Untuned Baseline)",
+  "algorithm_family": "Boosting",
+  "rationale": "Selected as final deployment classifier due to fast inference (0.7554s) and minimal accuracy difference (+0.25% Top-1) compared to Bayesian tuning, reserving sequential error correction for the HMM/Viterbi decoder.",
+  "baseline_metrics": {
+    "parameters": {
+      "n_estimators": 300,
+      "max_depth": 6,
+      "learning_rate": 0.05,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "decision_threshold": 0.5
+    },
+    "cv_5fold_top1_accuracy": 0.6967,
+    "cv_5fold_macro_f1": 0.7335,
+    "cv_5fold_macro_f1_std": 0.0237,
+    "cv_5fold_log_loss": 0.5056,
+    "student_test_top1_accuracy": 0.8371,
+    "student_test_macro_f1": 0.7288,
+    "student_test_precision_macro": 0.7540,
+    "student_test_recall_macro": 0.7244,
+    "student_test_log_loss": 0.5660,
+    "training_time_seconds": 91.761,
+    "inference_time_seconds": 0.7554
+  },
+  "bayesian_tuned_metrics": {
+    "parameters": {
+      "n_estimators": 245,
+      "max_depth": 7,
+      "learning_rate": 0.02383021369438993,
+      "min_child_weight": 11,
+      "subsample": 0.9222640582888348,
+      "colsample_bytree": 0.6620939201837902,
+      "gamma": 1.81946747463983,
+      "reg_alpha": 0.0220876619502176,
+      "reg_lambda": 0.2749501150146538,
+      "decision_threshold": 0.45
+    },
+    "cv_5fold_top1_accuracy": 0.7022,
+    "cv_5fold_top1_accuracy_std": 0.0932,
+    "cv_5fold_macro_f1": 0.7373,
+    "cv_5fold_macro_f1_std": 0.0223,
+    "student_test_top1_accuracy": 0.8396,
+    "student_test_macro_f1": 0.7379,
+    "student_test_precision_macro": 0.7519,
+    "student_test_recall_macro": 0.7338,
+    "student_test_log_loss": 0.5517,
+    "optimisation_time_seconds": 5389.37,
+    "inference_time_seconds": 1.4214
+  }
+}
