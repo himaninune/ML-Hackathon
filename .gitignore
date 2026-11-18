@@ -19,3 +19,4 @@ experiments/results/*_features.csv
 # Generated model artifacts
 experiments/model_results/*/*.joblib
 experiments/model_results/*/validation_predictions.csv
+experiments/model_results/*/*.pkl
