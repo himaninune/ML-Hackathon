@@ -5,3 +5,7 @@ pydantic
 pytest
 httpx
 xgboost
+numpy
+pandas
+scipy
+networkx
