@@ -7,6 +7,12 @@ DATA_DIR = Path(os.getenv("PATHSNAP_DATA_DIR", str(DATA_DIR))).resolve()
 PROCESSED_DIR = Path(os.getenv("PATHSNAP_PROCESSED_DIR", str(ROOT / "data" / "processed"))).resolve()
 RESULTS_DIR = ROOT / "experiments" / "results"
 VISUALIZATIONS_DIR = ROOT / "visualizations"
+XGBOOST_METRICS_PATH = Path(os.getenv(
+    "PATHSNAP_XGBOOST_METRICS_PATH", str(RESULTS_DIR / "xgboost_metrics.json")
+)).resolve()
+VITERBI_METRICS_PATH = Path(os.getenv(
+    "PATHSNAP_VITERBI_METRICS_PATH", str(RESULTS_DIR / "viterbi_metrics.json")
+)).resolve()
 
 PARTITIONS = ("train", "student_test", "evaluator_test")
 # Dataset convention assumed by this package:

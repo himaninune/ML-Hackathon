@@ -45,6 +45,53 @@ export interface EvaluationResponse {
   reason?: string;
 }
 
+export interface XGBoostMetricRun {
+  parameters: Record<string, number>;
+  metrics: Record<string, number>;
+}
+
+export interface XGBoostMetricData {
+  selected_model: string;
+  algorithm_family: string;
+  rationale: string;
+  baseline_metrics: XGBoostMetricRun;
+  bayesian_tuned_metrics: XGBoostMetricRun;
+}
+
+export interface XGBoostMetricsResponse {
+  available: boolean;
+  evaluation_stage: string;
+  evaluation_split: string;
+  reference_note: string;
+  metrics: XGBoostMetricData | null;
+  reason: string | null;
+}
+
+export interface ViterbiMetricData {
+  pointwise_xgb_top1_accuracy: number;
+  viterbi_sequence_top1_accuracy: number;
+  accuracy_gain: number;
+  pointwise_route_continuity: number;
+  viterbi_route_continuity: number;
+  route_continuity_gain: number;
+  viterbi_decoding_time_seconds: number;
+  transition_log_priors: Record<string, number>;
+}
+
+export interface ViterbiMetricsResponse {
+  available: boolean;
+  evaluation_stage: string;
+  evaluation_split: string;
+  reference_note: string;
+  metrics: ViterbiMetricData | null;
+  reason: string | null;
+}
+
+export interface MetricsOverviewResponse {
+  xgboost: XGBoostMetricsResponse;
+  viterbi: ViterbiMetricsResponse;
+}
+
 export interface PredictionResult {
   trip_id: string;
   status: string;

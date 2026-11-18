@@ -5,8 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import logging
 import time
-from src.config import DATA_DIR, PROCESSED_DIR, CORS_ORIGINS
+from src.config import DATA_DIR, CORS_ORIGINS
+from src.api.schemas import XGBoostMetricsResponse, ViterbiMetricsResponse, MetricsOverviewResponse
 from src.models.xgboost_loader import XGBoostScorer
+from src.services.metrics_service import metrics_service
 from src.services.prediction_service import PredictionService
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -43,6 +45,21 @@ def health():
     return {"status": "healthy", "model_loaded": scorer.loaded,
             "model_error": None if scorer.loaded else scorer.error,
             "road_network_loaded": service.network_cache_size > 0, "backend_version": app.version}
+
+
+@app.get("/api/metrics/xgboost", response_model=XGBoostMetricsResponse)
+def xgboost_metrics():
+    return metrics_service.xgboost()
+
+
+@app.get("/api/metrics/viterbi", response_model=ViterbiMetricsResponse)
+def viterbi_metrics():
+    return metrics_service.viterbi()
+
+
+@app.get("/api/metrics/overview", response_model=MetricsOverviewResponse)
+def metrics_overview():
+    return metrics_service.overview()
 
 
 @app.get("/api/trips")

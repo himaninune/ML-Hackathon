@@ -5,10 +5,13 @@ import type {
   HealthResponse,
   LatLon,
   MatchedArc,
+  MetricsOverviewResponse,
   PredictionResult,
   TripDetailsResponse,
   TripMapResponse,
   TripSummary,
+  ViterbiMetricsResponse,
+  XGBoostMetricsResponse,
 } from '../types/api';
 
 const baseURL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '');
@@ -20,6 +23,38 @@ function record(value: unknown): value is Record<string, unknown> {
 
 function isCoordinate(value: unknown): value is LatLon {
   return Array.isArray(value) && value.length >= 2 && Number.isFinite(value[0]) && Number.isFinite(value[1]);
+}
+
+function isNumberMap(value: unknown): value is Record<string, number> {
+  return record(value) && Object.values(value).every((item) => typeof item === 'number' && Number.isFinite(item));
+}
+
+function isMetricRun(value: unknown): boolean {
+  return record(value) && isNumberMap(value.parameters) && isNumberMap(value.metrics);
+}
+
+function isXGBoostMetrics(value: unknown): value is XGBoostMetricsResponse {
+  if (!record(value) || typeof value.available !== 'boolean' || typeof value.evaluation_stage !== 'string'
+      || typeof value.evaluation_split !== 'string' || typeof value.reference_note !== 'string') return false;
+  if (!value.available) return value.metrics === null && (value.reason === null || typeof value.reason === 'string');
+  if (!record(value.metrics)) return false;
+  const data = value.metrics;
+  return typeof data.selected_model === 'string' && typeof data.algorithm_family === 'string'
+    && typeof data.rationale === 'string' && isMetricRun(data.baseline_metrics)
+    && isMetricRun(data.bayesian_tuned_metrics);
+}
+
+function isViterbiMetrics(value: unknown): value is ViterbiMetricsResponse {
+  if (!record(value) || typeof value.available !== 'boolean' || typeof value.evaluation_stage !== 'string'
+      || typeof value.evaluation_split !== 'string' || typeof value.reference_note !== 'string') return false;
+  if (!value.available) return value.metrics === null && (value.reason === null || typeof value.reason === 'string');
+  if (!record(value.metrics) || !isNumberMap(value.metrics.transition_log_priors)) return false;
+  return Object.entries(value.metrics).every(([key, item]) => key === 'transition_log_priors'
+    || (typeof item === 'number' && Number.isFinite(item)));
+}
+
+function isMetricsOverview(value: unknown): value is MetricsOverviewResponse {
+  return record(value) && isXGBoostMetrics(value.xgboost) && isViterbiMetrics(value.viterbi);
 }
 
 function assertValid<T>(value: unknown, valid: (input: unknown) => boolean, label: string): T {
@@ -110,6 +145,18 @@ export const api = {
   async map(tripId: string): Promise<TripMapResponse> {
     const response = await client.get<unknown>(`/api/trips/${encodeURIComponent(tripId)}/map`);
     return assertValid<TripMapResponse>(response.data, isMapData, 'map');
+  },
+  async metricsXGBoost(): Promise<XGBoostMetricsResponse> {
+    const response = await client.get<unknown>('/api/metrics/xgboost');
+    return assertValid<XGBoostMetricsResponse>(response.data, isXGBoostMetrics, 'XGBoost metrics');
+  },
+  async metricsViterbi(): Promise<ViterbiMetricsResponse> {
+    const response = await client.get<unknown>('/api/metrics/viterbi');
+    return assertValid<ViterbiMetricsResponse>(response.data, isViterbiMetrics, 'Viterbi metrics');
+  },
+  async metricsOverview(): Promise<MetricsOverviewResponse> {
+    const response = await client.get<unknown>('/api/metrics/overview');
+    return assertValid<MetricsOverviewResponse>(response.data, isMetricsOverview, 'metrics overview');
   },
   async predict(tripId: string): Promise<PredictionResult> {
     const response = await client.post<unknown>('/api/predict', { trip_id: tripId }, { timeout: 300_000 });

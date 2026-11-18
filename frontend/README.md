@@ -28,3 +28,5 @@ npm run build
 ```
 
 The trip selector and dashboard reflect the trips returned by the backend. The backend currently returns student-testing trips; the UI does not provide reference routes. Evaluation is labelled heuristic when the API identifies it as heuristic, and unavailable when the API has no evaluation data.
+
+The Evaluation page fetches `GET /api/metrics/overview` and keeps the XGBoost candidate-classification results separate from HMM/Viterbi route-reconstruction results. The Viterbi artifact is from student-test data with heuristic route-membership labels; the page labels it as not official ground truth. Missing or invalid metric files are shown as unavailable by the backend and are not replaced with frontend values.

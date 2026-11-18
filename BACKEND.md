@@ -33,6 +33,9 @@ trip or separate evaluator metrics are claimed here.
 - `GET /api/trips`: IDs, GPS observation counts, and duration for student-test trips.
 - `GET /api/trips/{trip_id}`: GPS coordinates and timestamps only.
 - `GET /api/trips/{trip_id}/map`: compact GPS geometry for map display.
+- `GET /api/metrics/xgboost`: validated XGBoost candidate-classification metrics and model comparison.
+- `GET /api/metrics/viterbi`: validated student-test route-reconstruction metrics and decoder priors.
+- `GET /api/metrics/overview`: both metric responses, kept in separate stages.
 - `POST /api/predict` with `{"trip_id":"00000000"}`: candidate scoring, Viterbi
   road route (including intermediate connected arcs), per-observation selected
   arc geometries, GPS geometry, unmatched observations, and
@@ -41,6 +44,11 @@ trip or separate evaluator metrics are claimed here.
 Swagger UI: `http://<laptop-1-ip>:8000/docs`; OpenAPI JSON: `/openapi.json`.
 The API never returns a reference route. The optional map endpoint currently
 returns GPS only; predicted road geometry is included in the prediction response.
+Metrics endpoints return values and descriptive metadata from the two configured
+JSON artifacts. Missing or invalid files produce an `available: false` response
+without exposing server paths. XGBoost scores represent candidate classification;
+the Viterbi results represent sequence reconstruction from student-test
+heuristic route-membership labels, not official ground truth.
 
 ## Configuration
 
@@ -48,6 +56,8 @@ Copy `.env.example` to `.env` as a reference and set these variables in the shel
 or deployment environment (the application does not auto-read `.env`):
 
 - `XGBOOST_MODEL_PATH`: selected XGBoost JSON artifact.
+- `PATHSNAP_XGBOOST_METRICS_PATH`: XGBoost metrics JSON; defaults to `experiments/results/xgboost_metrics.json`.
+- `PATHSNAP_VITERBI_METRICS_PATH`: Viterbi metrics JSON; defaults to `experiments/results/viterbi_metrics.json`.
 - `PATHSNAP_DATA_DIR`: root containing `student_test` and `train`.
 - `PATHSNAP_PROCESSED_DIR`: processed GPS CSV root.
 - `PATHSNAP_HOST`: defaults to `0.0.0.0` for LAN access.

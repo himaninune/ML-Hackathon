@@ -22,3 +22,7 @@ experiments/model_results/*/validation_predictions.csv
 experiments/model_results/*/*.pkl
 experiments/results/*_preds.csv
 experiments/results/*_preds.csv
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
