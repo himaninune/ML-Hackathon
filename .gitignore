@@ -23,3 +23,7 @@ experiments/model_results/*/validation_predictions.csv
 experiments/model_results/*/*.pkl
 data/Student folder/evaluator_test/
 data/processed/evaluator_test/
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
