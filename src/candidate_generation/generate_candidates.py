@@ -95,6 +95,13 @@ def candidates_for_trip(gps, nodes, arcs, route_ids):
     midpoint_tree = cKDTree(
         np.column_stack([midpoint_x, midpoint_y])
     )
+    # Keep indexed rows as tuples; repeated DataFrame.iloc access dominates runtime
+    # for long trajectories and does not change the candidate set or features.
+    arc_records = list(arc_work.itertuples(index=False))
+    ax_values, ay_values = np.asarray(ax), np.asarray(ay)
+    bx_values, by_values = np.asarray(bx), np.asarray(by)
+    dx_values, dy_values = bx_values - ax_values, by_values - ay_values
+    denom_values = dx_values * dx_values + dy_values * dy_values
 
     rows = []
 
@@ -120,28 +127,23 @@ def candidates_for_trip(gps, nodes, arcs, route_ids):
             nearest_indices
         ).astype(int)
 
-        # Calculate exact point-to-segment distances
-        distances = []
-
-        for i in nearest_indices:
-
-            arc = arc_work.iloc[i]
-
-            distance = point_to_segment_distance(
-                px,
-                py,
-                arc.ax,
-                arc.ay,
-                arc.bx,
-                arc.by
-            )
-
-            distances.append((i, distance))
+        # Exact point-to-segment projection for the nearest midpoint shortlist.
+        vx, vy = dx_values[nearest_indices], dy_values[nearest_indices]
+        denom = denom_values[nearest_indices]
+        along_values = np.divide(
+            (px - ax_values[nearest_indices]) * vx + (py - ay_values[nearest_indices]) * vy,
+            denom, out=np.zeros_like(denom, dtype=float), where=denom != 0,
+        )
+        along_values = np.clip(along_values, 0.0, 1.0)
+        qx = ax_values[nearest_indices] + along_values * vx
+        qy = ay_values[nearest_indices] + along_values * vy
+        dist_values = np.hypot(px - qx, py - qy)
+        distances = [(int(i), float(d), float(t)) for i, d, t in zip(nearest_indices, dist_values, along_values)]
 
         # Keep candidates within the configured radius
         eligible = [
-            (i, distance)
-            for i, distance in distances
+            (i, distance, along)
+            for i, distance, along in distances
             if distance <= CANDIDATE_RADIUS_METRES
         ]
 
@@ -159,12 +161,12 @@ def candidates_for_trip(gps, nodes, arcs, route_ids):
         ]
 
         # Generate feature row for each candidate
-        for rank, (i, distance) in enumerate(
+        for rank, (i, distance, along) in enumerate(
             eligible,
             start=1
         ):
 
-            arc = arc_work.iloc[i]
+            arc = arc_records[i]
 
             # Heading difference
             if pd.notna(point.gps_heading_deg):
@@ -206,6 +208,17 @@ def candidates_for_trip(gps, nodes, arcs, route_ids):
                 "candidate_arc_id": int(
                     arc.arc_id
                 ),
+
+                "from_node_id": int(arc.from_node_id),
+                "to_node_id": int(arc.to_node_id),
+                "from_lon": float(arc.from_lon),
+                "from_lat": float(arc.from_lat),
+                "to_lon": float(arc.to_lon),
+                "to_lat": float(arc.to_lat),
+                "obs_lon": float(point.longitude),
+                "obs_lat": float(point.latitude),
+                "offset_m": along * float(arc.road_length_m),
+                "remaining_m": (1.0 - along) * float(arc.road_length_m),
 
                 "candidate_rank": rank,
 
